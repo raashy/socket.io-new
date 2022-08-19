@@ -1,6 +1,13 @@
-const http = require('http').createServer()
+const express = require('express');
 
-const io = require('socket.io')(http, {
+const PORT = process.env.PORT || 3001;
+const INDEX = '/index.html';
+
+const server = express()
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const io = require('socket.io')(server, {
   cors: {origin: '*'}
 } )
 
@@ -12,5 +19,3 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("change", data);
   })
 });
-
-http.listen(3000 || process.env.PORT);
